@@ -1,0 +1,22 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    //
+    protected $casts = [
+        'comments' => 'array'
+    ];
+
+    protected $guarded = [];
+    // public function profile(){
+    //     return $this->belongsTo(Profile::class);
+    // }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+}
