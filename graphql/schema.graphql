@@ -17,8 +17,8 @@ type Query {
 
 type Mutation {
     createUser(
-        name: String!
-        username: String!
+        name: String!  @rules(apply: ["required"])
+        username: String! @rules(apply: ["required", "unique:users"])
         email: String! @rules(apply: ["required", "email", "unique:users"])
         password: String! @bcrypt @rules(apply: ["required", "min:8"])
 
