@@ -13,6 +13,8 @@ type Query {
 
     post(id: ID @eq ): Post @find
     posts: [Post!]! @all
+
+    me: User @auth(guard: "api")
 }
 
 type Mutation {
@@ -30,12 +32,12 @@ type Mutation {
 
     ): String @field(resolver: "AuthMutator@resolve")
 
-    me: User @auth(guard: "api")
+    # me: User @auth(guard: "api")
 
     createProfile(
         description: String
         website: String
-    ): Profile @field(resolver: "ProfileMutator@create") @middleware(checks: ["auth:api"])
+    ): String @field(resolver: "ProfileMutator@create") @middleware(checks: ["auth:api"])
 
     updateProfile(
         description: String
