@@ -4,6 +4,8 @@ namespace App\GraphQL\Mutations;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileMutator
 {
@@ -21,6 +23,9 @@ class ProfileMutator
         $article = new \App\Profile();
         $article->description = $args['description'];
         $article->website = $args['website'];
+        $article->photo = $args['photo'];
+        Storage::putFile('photos', new File('/path/to/photo'));
+        $article->photo->$args[file('photo')]->store('photos');
         $context->user()->profile()->save($article);
 
         return $article;
@@ -34,6 +39,7 @@ class ProfileMutator
         $article = new \App\Profile();
         $article->description = $args['description'];
         $article->website = $args['website'];
+        // $article->photo = $args['photo']->storePublicly('uploads');
         $context->user()->profile()->save($article);
 
         return $article;

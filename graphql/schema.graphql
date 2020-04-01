@@ -1,6 +1,7 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-01-01 13:00:00`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
-
+scalar Upload
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
 "A date string with format `Y-m-d`, e.g. `2011-05-23`."
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
@@ -37,11 +38,13 @@ type Mutation {
     createProfile(
         description: String
         website: String
+        file: Upload
     ): String @field(resolver: "ProfileMutator@create") @middleware(checks: ["auth:api"])
 
     updateProfile(
         description: String
         website: String
+        file: Upload
     ): Profile @field(resolver: "ProfileMutator@update") @middleware(checks: ["auth:api"])
 
     createPost(
@@ -69,6 +72,7 @@ type Profile {
     description: String
     website: String
     user: User! @belongsTo
+    photo: Upload
     # created_at: DateTime!
     # updated_at: DateTime!
 }
