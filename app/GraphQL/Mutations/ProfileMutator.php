@@ -24,8 +24,8 @@ class ProfileMutator
         $article->description = $args['description'];
         $article->website = $args['website'];
         $article->photo = $args['photo'];
-        Storage::putFile('photos', new File('/path/to/photo'));
-        $article->photo->$args[file('photo')]->store('photos');
+        // Storage::putFile('photos', new File('/path/to/photo'));
+        // $article->photo->$args[file('photo')]->store('photos');
         $context->user()->profile()->save($article);
 
         return $article;

@@ -52,6 +52,14 @@ type Mutation {
         post: String!
     ): Post @field(resolver: "PostMutator@create") @middleware(checks: ["auth:api"])
 
+    follow(
+        following_id: ID!
+    ): User @field(resolver: "FollowerMutator@create") @middleware(checks: ["auth:api"])
+
+    unFollow(
+        following_id: ID!
+    ): User @field(resolver: "FollowerMutator@destroy") @middleware(checks: ["auth:api"])
+
 }
 
 
@@ -62,6 +70,8 @@ type User {
     username: String!
     posts: [Post] @hasMany
     profile: Profile @hasOne
+    followings: [User] @belongsToMany
+    followers: [User] @belongsToMany
     # created_at: DateTime!
     # updated_at: DateTime!
 }
@@ -87,6 +97,13 @@ type Post {
     # updated_at: DateTime!
 }
 
+# type Follower {
+#     name: String!
+#     username: String!
+#     email: String!
+#     id: ID!
+#     user: User! @belongsTo
+# }
 # type Query{
 #     users: [User!]! @all
 # }
