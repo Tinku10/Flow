@@ -16,6 +16,9 @@ type Query {
     posts: [Post!]! @all
 
     me: User @auth(guard: "api")
+
+    like(id: ID @eq): Like @find
+    likes: [Like] @all
 }
 
 type Mutation {
@@ -60,6 +63,14 @@ type Mutation {
         following_id: ID!
     ): User @field(resolver: "FollowerMutator@destroy") @middleware(checks: ["auth:api"])
 
+    addLike(
+        post_id: ID!
+    ): Post @field(resolver: "LikeMutator@create") @middleware(checks: ["auth:api"])
+
+    removeLike(
+        post_id: ID!
+    ): Boolean @field(resolver: "LikeMutator@destroy") @middleware(checks: ["auth:api"])
+
 }
 
 
@@ -92,7 +103,9 @@ type Post {
     # user_id: ID!
     title: String!
     post: String!
+    created_at: DateTime!
     user: User! @belongsTo
+    likes: [Like] @hasMany
     # created_at: DateTime!
     # updated_at: DateTime!
 }
@@ -107,3 +120,9 @@ type Post {
 # type Query{
 #     users: [User!]! @all
 # }
+type Like {
+    id: ID!
+    likes: Int
+    liker_id: ID!
+    post: Post @belongsTo
+}
