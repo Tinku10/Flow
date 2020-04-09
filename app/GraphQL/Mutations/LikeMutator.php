@@ -20,28 +20,50 @@ class LikeMutator
     {
         // TODO implement the resolver
         $post = \App\Post::find($args['post_id']);
-        $like = new \App\Like();
-        $like->likes = $like->increment('likes');
-        // $post->likes()->delete();
-        $like->post_id = $args['post_id'];
-        $like->liker_id = $context->user()->id;
-        // $post->like()->delete();
-        // $post->like()->post_id = $post->id;
-        //trying a differnt approach
-        // $post->like()->increment('likes');
-        // $post->push();
-        $like->save();
-        // $post->likes()->save($like);
 
-        return $post;
+        $liker_id = $context->user()->id;
+        $post_id = $args['post_id'];
+
+        $likeTest = \App\Like::where(['liker_id' => $liker_id, 'post_id' => $post_id]);
+
+        $likeNewUser = \App\Like::where(['post_id' => $post_id]);
+
+        if($likeTest->exists()){
+            $likeTest->delete();
+        }elseif($likeNewUser->exists()){
+            $like = new \App\Like();
+            $like->liker_id = $liker_id;
+            $like->post_id = $post_id;
+            $like->likes = $likeNewUser->orderBy('created_at', 'DESC')->first()->likes + 1;
+            $like->save();
+        }
+        else{
+            $like = new \App\Like();
+            $like->likes = 1;
+            // $post->likes()->delete();
+            $like->post_id = $post_id;
+            $like->liker_id = $liker_id;
+            // $post->like()->delete();
+            // $post->like()->post_id = $post->id;
+            //trying a differnt approach
+            // $post->like()->increment('likes');
+            // $post->push();
+            $like->save();
+            // $post->likes()->save($like);
+        }
+
+
+        return $post->likes()->orderBy('created_at', "DESC")->first()->likes;
     }
 
     public function destroy($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         // TODO implement the resolver
         // $post = \App\Post::find($args['post_id']);
+        //don't use get() with where if deleting, it does'nt work
         $liker_id = $context->user()->id;
-        $like = \App\Like::where('liker_id', $liker_id);
+        $post_id = $args['post_id'];
+        $like = \App\Like::where(['liker_id' => $liker_id, 'post_id' => $post_id]);
         $like->delete();
         // $post->likes()->decrement('likes');
         // $post->push();

@@ -65,7 +65,7 @@ type Mutation {
 
     addLike(
         post_id: ID!
-    ): Post @field(resolver: "LikeMutator@create") @middleware(checks: ["auth:api"])
+    ): Int @field(resolver: "LikeMutator@create") @middleware(checks: ["auth:api"])
 
     removeLike(
         post_id: ID!

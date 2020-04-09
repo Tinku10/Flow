@@ -20,7 +20,19 @@ class FollowerMutator
     {
         // TODO implement the resolver
         $user = \App\User::find($args['following_id']);
+        $followers = $user->followers()->get();
+        foreach($followers as $follow){
+            if($follow->id == $context->user()->id){
+                $context->user()->followings()->detach($user);
+                return $context->user();
+                
+            }
+        }
+        
+        
         $context->user()->followings()->attach($user);
+
+        
         // $user->followers()->attach($context->user());
         return $user;
     }
